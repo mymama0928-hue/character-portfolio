@@ -306,12 +306,25 @@
   .work .shot .zoom-badge svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; }
   .work figcaption { display: grid; gap: 6px; padding-inline: 2px; }
   .work figcaption strong { font: 700 18px/1.35 var(--serif-kr); }
+  .cap-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .open-btn {
+    flex: none; display: inline-flex; align-items: center; gap: 5px;
+    min-height: 32px; padding: 0 11px; border-radius: 999px;
+    border: 1px solid var(--line); background: rgba(255,255,255,.45);
+    color: var(--ink); font-size: 12px; font-weight: 500; line-height: 1;
+  }
+  .open-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+  /* 폰: 이미지 위 배지는 영상 버튼을 가리므로 숨기고 제목 줄 버튼으로 대신 */
+  @media (max-width: 819px) {
+    .work .shot .zoom-badge { display: none; }
+  }
   .tools { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
   .tools li { font-size: 12px; line-height: 1; padding: 6px 9px; border-radius: 4px; background: rgba(255,255,255,.45); color: var(--ink-soft); }
   @media (min-width: 820px) {
     .work .shot .zoom-badge { opacity: 0; transition: opacity .2s; }
     .work .shot:hover .zoom-badge, .work .shot:focus-visible .zoom-badge { opacity: 1; }
     .work figcaption { grid-template-columns: auto 1fr; align-items: baseline; column-gap: 16px; }
+    .open-btn { display: none; }
   }
 
   .end {
@@ -379,9 +392,9 @@
   }
   .play-spot .wip {
     position: absolute; z-index: 1; left: 50%; bottom: 7%; transform: translateX(-50%);
-    padding: .35em .8em; border-radius: 999px; white-space: nowrap;
-    background: rgba(43,31,28,.72); color: #FFF6EC;
-    font-size: clamp(8px, 8cqw, 12px); font-weight: 600; letter-spacing: .02em;
+    padding: .25em .6em; border-radius: 999px; white-space: nowrap;
+    background: rgba(43,31,28,.62); color: #FFF6EC;
+    font-size: clamp(7px, 6cqw, 11px); font-weight: 600; letter-spacing: .02em;
   }
   .play-spot .pbtn svg { width: 42%; height: 42%; fill: currentColor; margin-left: 8%; }
 
@@ -604,7 +617,10 @@
         ${spots(w, i)}
       </div>
       <figcaption>
-        <strong>${w.title}</strong>
+        <div class="cap-row">
+          <strong>${w.title}</strong>
+          <button class="open-btn" type="button" data-i="${i}" aria-label="${w.title} 크게 보기"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>크게 보기</button>
+        </div>
         <ul class="tools">${w.tools.map(t => `<li>${t}</li>`).join("")}</ul>
       </figcaption>`;
     list.append(fig);
@@ -786,7 +802,7 @@
 
   list.addEventListener("click", (e) => {
     if (onSpot(e)) return;
-    const b = e.target.closest(".shot"); if (b) openViewer(+b.dataset.i, b);
+    const b = e.target.closest(".shot, .open-btn"); if (b) openViewer(+b.dataset.i, b);
   });
   $("#vClose").addEventListener("click", closeViewer);
   $("#vPrev").addEventListener("click", () => show(cur - 1));
