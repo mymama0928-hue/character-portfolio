@@ -109,7 +109,7 @@
   .cover .kicker {
     margin: 0 0 4px; font: 500 11px/1 var(--sans); letter-spacing: .28em; text-transform: uppercase; color: #E9D7BD;
   }
-  .cover h1 { margin: 0; font-size: clamp(44px, 17cqw, 76px); line-height: 1.05; letter-spacing: .06em; }
+  .cover h1 { margin: 0; font-size: min(15cqw, 76px); line-height: 1.05; letter-spacing: .06em; white-space: nowrap; }
   .cover .who { margin: 10px 0 26px; font: 400 15px/1.55 var(--serif-kr); color: #F1E4D3; text-wrap: balance; }
   .btn-open {
     display: inline-flex; align-items: center; justify-content: center; gap: 10px;
@@ -131,7 +131,7 @@
   .title-over {
     position: absolute; left: 0; right: 0; top: 46%;
     margin: 0; text-align: center;
-    font-size: 13.5cqw; letter-spacing: .6em; padding-left: .6em;
+    font-size: 13.5cqw; letter-spacing: .6em; padding-left: .6em; white-space: nowrap;
     opacity: 0; transform: translateY(8px);
     transition: opacity 1.1s ease, letter-spacing 1.8s cubic-bezier(.2,.7,.2,1), padding 1.8s cubic-bezier(.2,.7,.2,1), transform 1.1s ease;
     pointer-events: none;
@@ -548,7 +548,7 @@
 <script>
 (() => {
   const WORKS = [
-    { id: "chami", chip: "참이와 질러", title: "참이와 질러", img: "assets/work01.jpg", h: 636,
+    { id: "chami", chip: "참아와 질러", title: "참아와 질러", img: "assets/work01.jpg", h: 636,
       tools: ["포토샵 드로잉", "모션 GIF", "이모티콘 기획"],
       gifs: [
         { alt: "참아 모션 GIF", src: "assets/chama.gif", x: 3.81, y: 41.19, w: 22.05, h: 48.27 },
@@ -857,6 +857,29 @@
       swipe = null;
     }
   });
+
+  /* 브라우저 글자 크기를 키워도 PORTFOLIO가 화면 밖으로 넘치지 않게 맞춘다 */
+  function fitText(el, finalSpacing) {
+    const prev = { t: el.style.transition, ls: el.style.letterSpacing, pl: el.style.paddingLeft };
+    el.style.fontSize = "";
+    if (finalSpacing) { el.style.transition = "none"; el.style.letterSpacing = finalSpacing; el.style.paddingLeft = finalSpacing; }
+    const range = document.createRange();
+    const textWidth = () => { range.selectNodeContents(el); return range.getBoundingClientRect().width + parseFloat(getComputedStyle(el).paddingLeft); };
+    const avail = el.clientWidth * 0.96;
+    let fs = parseFloat(getComputedStyle(el).fontSize), guard = 0;
+    while (textWidth() > avail && guard++ < 60) { fs *= 0.96; el.style.fontSize = fs + "px"; }
+    if (finalSpacing) {
+      el.style.letterSpacing = prev.ls; el.style.paddingLeft = prev.pl;
+      void el.offsetWidth; el.style.transition = prev.t;
+    }
+  }
+  const fitTitles = () => {
+    fitText(document.querySelector(".cover h1"));
+    fitText(document.querySelector(".title-over"), ".08em");
+  };
+  fitTitles();
+  (document.fonts && document.fonts.ready || Promise.resolve()).then(fitTitles);
+  addEventListener("resize", fitTitles);
 
   /* deep link straight to a work skips the intro */
   if (location.hash && WORKS.some(w => "#" + w.id === location.hash)) {
