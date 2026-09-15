@@ -352,6 +352,11 @@
 
   /* 이미지 속 영상 자리: 실제 영상 첫 장면 + 플레이 버튼 */
   .shot-wrap { position: relative; }
+  /* 이미지 속 흰 칸을 움직이는 GIF로 교체 (탭은 아래 이미지로 통과) */
+  .gif-spot {
+    position: absolute; object-fit: contain; background: #fff;
+    pointer-events: none; user-select: none;
+  }
   .play-spot {
     position: absolute; padding: 0; border: 0; background: #1E1614;
     overflow: hidden; container-type: inline-size;
@@ -531,7 +536,11 @@
 (() => {
   const WORKS = [
     { id: "chami", chip: "참이와 질러", title: "참이와 질러", img: "assets/work01.jpg", h: 636,
-      tools: ["포토샵 드로잉", "모션 GIF", "이모티콘 기획"] },
+      tools: ["포토샵 드로잉", "모션 GIF", "이모티콘 기획"],
+      gifs: [
+        { alt: "참아 모션 GIF", src: "assets/chama.gif", x: 3.81, y: 41.19, w: 22.05, h: 48.27 },
+        { alt: "질러 모션 GIF", src: "assets/jilleo.gif", x: 70.76, y: 41.19, w: 22.05, h: 48.27 },
+      ] },
     { id: "lemon", chip: "퍼니팜 레몬소녀", title: "퍼니팜 레몬소녀", img: "assets/work02.jpg", h: 810,
       tools: ["GPT Images 2.0", "턴어라운드 시트", "콘티·스토리보드", "홍보 영상 2편"],
       videos: [
@@ -576,7 +585,9 @@
       <img src="${v.poster}" alt="" loading="lazy" decoding="async">
       <span class="pbtn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3.5v17L20 12z"/></svg></span>
       ${v.wip ? `<span class="wip" aria-hidden="true">제작 중</span>` : ""}
-    </button>`).join("");
+    </button>`).join("") + (w.gifs || []).map(g => `
+    <img class="gif-spot" src="${g.src}" alt="${g.alt}" decoding="async"
+      style="left:${g.x}%;top:${g.y}%;width:${g.w}%;height:${g.h}%">`).join("");
   WORKS.forEach((w, i) => {
     const a = document.createElement("a");
     a.href = "#" + w.id; a.textContent = w.chip; a.dataset.i = i;
@@ -724,7 +735,7 @@
     vImg.src = w.img; vImg.alt = w.title + " 작업물";
     $("#vTitle").textContent = w.title;
     $("#vCount").textContent = `${cur + 1} / ${WORKS.length}`;
-    vBox.querySelectorAll(".play-spot").forEach(el => el.remove());
+    vBox.querySelectorAll(".play-spot, .gif-spot").forEach(el => el.remove());
     vImg.insertAdjacentHTML("afterend", spots(w, cur));
     zoom = 1; vBox.style.width = "100%"; vp.scrollTo(0, 0);
     $("#vOut").disabled = true; $("#vIn").disabled = false;
