@@ -1,0 +1,5 @@
+# 원본 영상은 올리지 않음 (웹용 압축본은 assets/에 있음)
+/*.mp4
+/*.mov
+Thumbs.db
+desktop.ini
