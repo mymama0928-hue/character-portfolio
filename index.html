@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2B1F1C">
-<meta name="description" content="SNS 마케터 & 콘텐츠 크리에이터 김지수의 AI 캐릭터 포트폴리오 — 작업물 7편과 영상 5편">
+<meta name="description" content="SNS 마케터 & 콘텐츠 크리에이터 김지수의 AI 캐릭터 포트폴리오 — 작업물 8편과 영상 5편">
 <link rel="canonical" href="https://mymama0928-hue.github.io/character-portfolio/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="김지수 포트폴리오">
 <meta property="og:title" content="김지수 캐릭터 포트폴리오">
-<meta property="og:description" content="SNS 마케터 & 콘텐츠 크리에이터 김지수의 AI 캐릭터 작업물 7편과 영상 5편">
+<meta property="og:description" content="SNS 마케터 & 콘텐츠 크리에이터 김지수의 AI 캐릭터 작업물 8편과 영상 5편">
 <meta property="og:url" content="https://mymama0928-hue.github.io/character-portfolio/">
 <meta property="og:image" content="https://mymama0928-hue.github.io/character-portfolio/assets/og-image.jpg">
 <meta property="og:image:width" content="1200">
@@ -366,6 +366,21 @@
   /* 이미지 속 영상 자리: 실제 영상 첫 장면 + 플레이 버튼 */
   .shot-wrap { position: relative; }
   /* 이미지 속 흰 칸을 움직이는 GIF로 교체 (탭은 아래 이미지로 통과) */
+  /* 제안서 페이지 탭 영역: 평소엔 투명, 누르거나 올리면 테두리 */
+  .page-spot {
+    position: absolute; padding: 0; border: 2px solid transparent; border-radius: 4px;
+    background: transparent; cursor: zoom-in; transition: border-color .15s, background .15s;
+  }
+  .page-spot span {
+    position: absolute; right: 4%; bottom: 5%;
+    padding: .25em .6em; border-radius: 999px;
+    background: rgba(43,31,28,.62); color: #FFF6EC;
+    font-size: clamp(8px, 1.1vw, 12px); font-weight: 600; line-height: 1;
+    opacity: 0; transition: opacity .15s;
+  }
+  .page-spot:hover, .page-spot:focus-visible { border-color: var(--teal); background: rgba(38,124,148,.08); }
+  .page-spot:hover span, .page-spot:focus-visible span { opacity: 1; }
+  @media (max-width: 819px) { .page-spot span { opacity: 1; } }
   .gif-spot {
     position: absolute; object-fit: contain; background: #fff;
     pointer-events: none; user-select: none;
@@ -579,6 +594,16 @@
       videos: [
         { title: "보였다면 멈췄을 겁니다 — 제작 중 영상 (앞부분)", src: "assets/traffic.mp4", poster: "assets/traffic.jpg", x: 75.29, y: 21.89, w: 20.47, h: 68.03, wip: true },
       ] },
+    { id: "jisulab", chip: "지수랩 제안서", title: "지수랩 — AI 콘텐츠 캐릭터 브랜딩 제안서", img: "assets/work08.jpg", w: 2784, h: 2412,
+      tools: ["와콤패드 드로잉(포토샵)", "GPT Images 2.0", "캐릭터 디자인 매뉴얼", "카드뉴스 8장", "마케팅 방안 3종", "제안서 6쪽 · 탭하면 쪽별로 크게"],
+      pages: [
+        { title: "제안서 표지", src: "assets/proposal-01.jpg", x: 48.71, y: 14.51, w: 47.23, h: 30.68 },
+        { title: "01 캐릭터 디자인 매뉴얼", src: "assets/proposal-02.jpg", x: 3.81, y: 50.5, w: 29.35, h: 19.03 },
+        { title: "02 카드뉴스 8장", src: "assets/proposal-03.jpg", x: 35.31, y: 50.5, w: 29.35, h: 19.03 },
+        { title: "마케팅 방안 ① 카드뉴스 연재", src: "assets/proposal-04.jpg", x: 66.81, y: 50.5, w: 29.35, h: 19.03 },
+        { title: "마케팅 방안 ② '내 가게 세 장면' 참여", src: "assets/proposal-05.jpg", x: 19.58, y: 74.83, w: 29.35, h: 19.03 },
+        { title: "마케팅 방안 ③ 업종별 질문 모집", src: "assets/proposal-06.jpg", x: 51.08, y: 74.83, w: 29.35, h: 19.03 },
+      ] },
   ];
 
   const $ = (s) => document.querySelector(s);
@@ -598,7 +623,9 @@
       <img src="${v.poster}" alt="" loading="lazy" decoding="async">
       <span class="pbtn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3.5v17L20 12z"/></svg></span>
       ${v.wip ? `<span class="wip" aria-hidden="true">제작 중</span>` : ""}
-    </button>`).join("") + (w.gifs || []).map(g => `
+    </button>`).join("") + (w.pages || []).map((pg, k) => `
+    <button class="page-spot" type="button" data-i="${i}" data-p="${k}" aria-label="${pg.title} 크게 보기"
+      style="left:${pg.x}%;top:${pg.y}%;width:${pg.w}%;height:${pg.h}%"><span>${k + 1} / ${w.pages.length}</span></button>`).join("") + (w.gifs || []).map(g => `
     <img class="gif-spot" src="${g.src}" alt="${g.alt}" decoding="async"
       style="left:${g.x}%;top:${g.y}%;width:${g.w}%;height:${g.h}%">`).join("");
   WORKS.forEach((w, i) => {
@@ -611,7 +638,7 @@
     fig.innerHTML = `
       <div class="shot-wrap">
         <button class="shot" type="button" data-i="${i}" aria-label="${w.title} 크게 보기">
-          <img src="${w.img}" alt="${w.title} 작업물" width="1392" height="${w.h}" loading="${i < 2 ? "eager" : "lazy"}" decoding="async">
+          <img src="${w.img}" alt="${w.title} 작업물" width="${w.w || 1392}" height="${w.h}" loading="${i < 2 ? "eager" : "lazy"}" decoding="async">
           <span class="zoom-badge" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M11 8v6M8 11h6"/></svg>크게 보기</span>
         </button>
         ${spots(w, i)}
@@ -728,7 +755,7 @@
 
   /* ---------- viewer ---------- */
   const viewer = $("#viewer"), vp = $("#vp"), vImg = $("#vImg"), vBox = $("#vBox");
-  let cur = 0, zoom = 1, lastFocus = null;
+  let items = WORKS, cur = 0, zoom = 1, lastFocus = null, backTo = null;
   const MAX_Z = 4;
 
   function setZoom(z, cx, cy) {
@@ -746,30 +773,40 @@
   }
 
   function show(i) {
-    cur = (i + WORKS.length) % WORKS.length;
-    const w = WORKS[cur];
-    vImg.src = w.img; vImg.alt = w.title + " 작업물";
+    cur = (i + items.length) % items.length;
+    const w = items[cur];
+    vImg.src = w.img; vImg.alt = w.title + (w.pageOf ? "" : " 작업물");
     $("#vTitle").textContent = w.title;
-    $("#vCount").textContent = `${cur + 1} / ${WORKS.length}`;
-    vBox.querySelectorAll(".play-spot, .gif-spot").forEach(el => el.remove());
-    vImg.insertAdjacentHTML("afterend", spots(w, cur));
+    $("#vCount").textContent = (w.pageOf ? w.pageOf + " · " : "") + `${cur + 1} / ${items.length}`;
+    vBox.querySelectorAll(".play-spot, .page-spot, .gif-spot").forEach(el => el.remove());
+    if (w.wi !== undefined) vImg.insertAdjacentHTML("afterend", spots(w, w.wi));
     zoom = 1; vBox.style.width = "100%"; vp.scrollTo(0, 0);
     $("#vOut").disabled = true; $("#vIn").disabled = false;
-    $("#vPrev").disabled = cur === 0; $("#vNext").disabled = cur === WORKS.length - 1;
+    $("#vPrev").disabled = cur === 0; $("#vNext").disabled = cur === items.length - 1;
+    // 폰에서는 처음부터 조금 확대해 작은 글씨가 읽히게 (가로형 페이지는 덜 확대)
+    if (innerWidth < 600) requestAnimationFrame(() => { const r = vp.getBoundingClientRect(); setZoom(w.pageOf ? 1.6 : 2.2, r.left, r.top); });
   }
   function openViewer(i, from) {
     lastFocus = from || document.activeElement;
+    items = WORKS.map((w, k) => ({ ...w, wi: k })); backTo = null;
     show(i);
     viewer.hidden = false; lock(true);
-    // start phones a notch zoomed so the small type is readable right away
-    if (innerWidth < 600) requestAnimationFrame(() => { const r = vp.getBoundingClientRect(); setZoom(2.2, r.left, r.top); });
+    $("#vClose").focus();
+  }
+  function openPages(wi, k, from) {
+    const w = WORKS[wi];
+    if (viewer.hidden) { lastFocus = from || document.activeElement; backTo = null; }
+    else backTo = { items, cur };            // 시트에서 열었으면 닫을 때 시트로 돌아감
+    items = w.pages.map(pg => ({ img: pg.src, title: pg.title, id: w.id, pageOf: w.chip }));
+    show(k);
+    viewer.hidden = false; lock(true);
     $("#vClose").focus();
   }
   function closeViewer() {
     if (viewer.hidden) return;
+    if (backTo) { items = backTo.items; const c = backTo.cur; backTo = null; show(c); return; }
     viewer.hidden = true; lock(false);
-    const w = WORKS[cur];
-    history.replaceState(null, "", "#" + w.id);
+    history.replaceState(null, "", "#" + items[cur].id);
     lastFocus && lastFocus.focus({ preventScroll: true });
   }
 
@@ -795,6 +832,8 @@
   $("#pClose").addEventListener("click", closePlayer);
   player.addEventListener("click", (e) => { if (e.target.classList.contains("p-stage")) closePlayer(); });
   const onSpot = (e) => {
+    const pg = e.target.closest(".page-spot");
+    if (pg) { e.stopPropagation(); openPages(+pg.dataset.i, +pg.dataset.p, pg); return true; }
     const sp = e.target.closest(".play-spot"); if (!sp) return false;
     e.stopPropagation(); openPlayer(+sp.dataset.i, +sp.dataset.v, sp); return true;
   };
